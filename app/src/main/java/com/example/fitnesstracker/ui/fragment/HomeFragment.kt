@@ -80,19 +80,19 @@ class HomeFragment : Fragment() {
                 val current = goalData?.currentCalories ?: 0
                 val actualPercent = goalData?.progressPercent?.toInt() ?: 0
 
-                // UI display logic: cap at 100%
-                val displayPercent = if (actualPercent > 100) 100 else actualPercent
-
+                // UI logic: Limit progress bar visual to 100
+                binding.progressBarGoal.progress = actualPercent.coerceAtMost(100)
                 binding.textViewGoalTarget.text = "Goal: $target kcal"
-                binding.progressBarGoal.progress = displayPercent
 
                 if (actualPercent >= 100) {
-                    binding.textViewGoalProgress.text = "$current / $target kcal ($displayPercent%)"
+                    // Goal Met state
+                    binding.textViewGoalProgress.text = "$current / $target kcal (Goal Met! 🎉)"
                     binding.progressBarGoal.progressTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(requireContext(), R.color.green)
                     )
                 } else {
-                    binding.textViewGoalProgress.text = "$current / $target kcal ($displayPercent%)"
+                    // In-progress state
+                    binding.textViewGoalProgress.text = "$current / $target kcal ($actualPercent%)"
                     binding.progressBarGoal.progressTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(requireContext(), R.color.blue)
                     )
@@ -133,9 +133,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun showSetGoalDialog() {
-        val input = EditText(requireContext())
-        input.inputType = InputType.TYPE_CLASS_NUMBER
-        input.hint = "e.g. 2000"
+        val input = EditText(requireContext()).apply {
+            inputType = InputType.TYPE_CLASS_NUMBER
+            hint = "e.g. 2000"
+        }
 
         AlertDialog.Builder(requireContext())
             .setTitle("Set Weekly Calorie Goal")
