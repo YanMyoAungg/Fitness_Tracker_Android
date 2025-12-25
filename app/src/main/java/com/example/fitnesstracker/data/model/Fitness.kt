@@ -7,7 +7,8 @@ enum class ActivityType(val displayName: String, val databaseValue: String) {
     RUNNING("Running", "running"),
     SWIMMING("Swimming", "swimming"),
     JUMPING_ROPE("Jumping Rope", "jumping_rope"),
-    CYCLING("Cycling", "cycling")
+    CYCLING("Cycling", "cycling"),
+    WEIGHT_LIFTING("Weight Lifting", "weight_lifting")
 }
 
 data class FitnessRecord(

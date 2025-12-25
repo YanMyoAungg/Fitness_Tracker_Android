@@ -1,16 +1,22 @@
 package com.example.fitnesstracker.ui.fragment
 
+import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.fitnesstracker.R
 import com.example.fitnesstracker.data.remote.SessionManager
 import com.example.fitnesstracker.databinding.FragmentHomeBinding
+import com.example.fitnesstracker.ui.viewmodel.GoalViewModel
 import com.example.fitnesstracker.ui.viewmodel.ProfileViewModel
 
 class HomeFragment : Fragment() {
@@ -19,9 +25,9 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val profileViewModel: ProfileViewModel by viewModels()
+    private val goalViewModel: GoalViewModel by viewModels()
     private lateinit var sessionManager: SessionManager
-    
-    // Flag to prevent the prompt from showing multiple times in one go
+
     private var isPromptShown = false
 
     override fun onCreateView(
@@ -36,11 +42,19 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         sessionManager = SessionManager(requireContext())
 
-        // 1. Check if we already have info in SessionManager
-        if (sessionManager.getWeight() <= 0 || sessionManager.getHeight() <= 0) {
-            checkProfileCompletion()
-        }
+        setupListeners()
+        observeViewModels()
 
+        val userId = sessionManager.getUserId()
+        if (userId != -1) {
+            if (sessionManager.getWeight() <= 0 || sessionManager.getHeight() <= 0) {
+                checkProfileCompletion(userId)
+            }
+            goalViewModel.fetchCurrentGoal(userId)
+        }
+    }
+
+    private fun setupListeners() {
         binding.buttonAddRecord.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_addRecordFragment)
         }
@@ -52,46 +66,104 @@ class HomeFragment : Fragment() {
         binding.buttonProfile.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
         }
+
+        binding.buttonSetGoal.setOnClickListener {
+            showSetGoalDialog()
+        }
     }
 
-    private fun checkProfileCompletion() {
-        val userId = sessionManager.getUserId()
-        if (userId != -1) {
-            profileViewModel.fetchProfile(userId)
-            
-            profileViewModel.profile.observe(viewLifecycleOwner) { profile ->
-                if (profile != null && !isPromptShown) {
-                    // 2. Check for null or 0 values
-                    val isWeightMissing = profile.currentWeight == null || profile.currentWeight <= 0
-                    val isHeightMissing = profile.height == null || profile.height <= 0
-                    
-                    if (isWeightMissing || isHeightMissing) {
-                        isPromptShown = true
-                        showProfilePrompt()
-                    } else {
-                        // Profile is actually complete, update local session just in case
-                        sessionManager.saveBodyInfo(
-                            profile.currentWeight ?: 0f,
-                            profile.height ?: 0f,
-                            profile.age ?: 0
-                        )
-                    }
+    private fun observeViewModels() {
+        goalViewModel.goalResult.observe(viewLifecycleOwner) { response ->
+            if (response != null && response.success) {
+                val goalData = response.data
+                val target = goalData?.targetCalories ?: 0
+                val current = goalData?.currentCalories ?: 0
+                val actualPercent = goalData?.progressPercent?.toInt() ?: 0
+
+                // UI display logic: cap at 100%
+                val displayPercent = if (actualPercent > 100) 100 else actualPercent
+
+                binding.textViewGoalTarget.text = "Goal: $target kcal"
+                binding.progressBarGoal.progress = displayPercent
+
+                if (actualPercent >= 100) {
+                    binding.textViewGoalProgress.text = "$current / $target kcal ($displayPercent%)"
+                    binding.progressBarGoal.progressTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(requireContext(), R.color.green)
+                    )
+                } else {
+                    binding.textViewGoalProgress.text = "$current / $target kcal ($displayPercent%)"
+                    binding.progressBarGoal.progressTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(requireContext(), R.color.blue)
+                    )
+                }
+            } else if (response != null) {
+                binding.textViewGoalTarget.text = "No goal set"
+                binding.progressBarGoal.progress = 0
+                binding.textViewGoalProgress.text = "Tap Update Goal to start"
+            }
+        }
+
+        goalViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            if (error != null) {
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun checkProfileCompletion(userId: Int) {
+        profileViewModel.fetchProfile(userId)
+        profileViewModel.profile.observe(viewLifecycleOwner) { profile ->
+            if (profile != null && !isPromptShown) {
+                val isWeightMissing = profile.currentWeight == null || profile.currentWeight <= 0
+                val isHeightMissing = profile.height == null || profile.height <= 0
+
+                if (isWeightMissing || isHeightMissing) {
+                    isPromptShown = true
+                    showProfilePrompt()
+                } else {
+                    sessionManager.saveBodyInfo(
+                        profile.currentWeight ?: 0f,
+                        profile.height ?: 0f,
+                        profile.age ?: 0
+                    )
                 }
             }
         }
+    }
+
+    private fun showSetGoalDialog() {
+        val input = EditText(requireContext())
+        input.inputType = InputType.TYPE_CLASS_NUMBER
+        input.hint = "e.g. 2000"
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Set Weekly Calorie Goal")
+            .setMessage("Enter your target calories for this week:")
+            .setView(input)
+            .setPositiveButton("Save") { _, _ ->
+                val target = input.text.toString().toIntOrNull()
+                if (target != null && target > 0) {
+                    val userId = sessionManager.getUserId()
+                    goalViewModel.setGoal(userId, target)
+                } else {
+                    Toast.makeText(context, "Please enter a valid number", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun showProfilePrompt() {
         AlertDialog.Builder(requireContext())
             .setTitle("Complete Your Profile")
             .setMessage("Please set your height and weight to get accurate fitness tracking.")
-            .setCancelable(false) // Prevent dismissing by clicking outside
+            .setCancelable(false)
             .setPositiveButton("Set Now") { _, _ ->
                 findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
             }
-            .setNegativeButton("Later") { dialog, _ ->
-                dialog.dismiss()
-            }
+            .setNegativeButton("Later", null)
             .show()
     }
 

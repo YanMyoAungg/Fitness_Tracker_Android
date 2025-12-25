@@ -49,4 +49,15 @@ interface ApiService {
         @Field("gender") gender: String?,
         @Field("phone") phone: String?
     ): UserProfileResponse
+
+    // Pointing to goal.php which handles both GET and POST
+    @GET("goal.php")
+    suspend fun getCurrentGoal(@Query("userId") userId: Int): GoalResponse
+
+    @FormUrlEncoded
+    @POST("goal.php")
+    suspend fun setGoal(
+        @Field("userId") userId: Int,
+        @Field("target_calories") targetCalories: Int
+    ): GoalResponse
 }
