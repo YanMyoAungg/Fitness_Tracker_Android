@@ -86,7 +86,7 @@ class HomeFragment : Fragment() {
 
                 if (actualPercent >= 100) {
                     // Goal Met state
-                    binding.textViewGoalProgress.text = "$current / $target kcal (Goal Met! 🎉)"
+                    binding.textViewGoalProgress.text = "$current / $target kcal"
                     binding.progressBarGoal.progressTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(requireContext(), R.color.green)
                     )
