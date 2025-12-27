@@ -26,7 +26,10 @@ interface ApiService {
         @Field("activity_type") type: String,
         @Field("duration") duration: Int,
         @Field("calories_burned") calories: Int,
-        @Field("activity_date") date: String
+        @Field("activity_date") date: String,
+        @Field("latitude") latitude: Double?,
+        @Field("longitude") longitude: Double?,
+        @Field("location_name") locationName: String?
     ): FitnessSingleResponse
 
     @GET("activities.php")
@@ -50,7 +53,6 @@ interface ApiService {
         @Field("phone") phone: String?
     ): UserProfileResponse
 
-    // Pointing to goal.php which handles both GET and POST
     @GET("goal.php")
     suspend fun getCurrentGoal(@Query("userId") userId: Int): GoalResponse
 

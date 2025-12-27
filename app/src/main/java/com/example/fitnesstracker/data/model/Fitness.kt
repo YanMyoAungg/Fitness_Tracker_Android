@@ -17,7 +17,10 @@ data class FitnessRecord(
     @SerializedName("activity_type") val activityType: String,
     val duration: Int,
     @SerializedName("calories_burned") val caloriesBurned: Int,
-    @SerializedName("activity_date") val activityDate: String
+    @SerializedName("activity_date") val activityDate: String,
+    val latitude: Double? = null,
+    val longitude: Double? = null,
+    @SerializedName("location_name") val locationName: String? = null
 )
 
 // Wrapper for the list response

@@ -36,14 +36,11 @@ class FitnessAdapter(private var records: List<FitnessRecord>) :
 
         fun bind(record: FitnessRecord) {
             try {
-                // Input format from PHP: 2025-12-19 18:10:54
                 val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 val dateObj = inputFormat.parse(record.activityDate)
 
                 if (dateObj != null) {
-                    // Desired Date format: 12-December-2025
                     val dateFormat = SimpleDateFormat("dd-MMMM-yyyy", Locale.getDefault())
-                    // Desired Time format: 12:30 (24h)
                     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
                     binding.textViewDate.text = dateFormat.format(dateObj)
@@ -60,6 +57,13 @@ class FitnessAdapter(private var records: List<FitnessRecord>) :
             binding.textViewActivityType.text = record.activityType
             binding.textViewCalories.text = "${record.caloriesBurned} kcal"
             binding.textViewDuration.text = "${record.duration} min"
+            
+            // Show location
+            binding.textViewLocation.text = if (!record.locationName.isNullOrEmpty()) {
+                "Location: ${record.locationName}"
+            } else {
+                "Location: Unknown"
+            }
         }
     }
 }

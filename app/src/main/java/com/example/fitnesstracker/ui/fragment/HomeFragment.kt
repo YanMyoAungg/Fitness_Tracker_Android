@@ -29,6 +29,7 @@ class HomeFragment : Fragment() {
     private lateinit var sessionManager: SessionManager
 
     private var isPromptShown = false
+    private var currentGoalTarget: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,7 +57,12 @@ class HomeFragment : Fragment() {
 
     private fun setupListeners() {
         binding.buttonAddRecord.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_addRecordFragment)
+            // ENFORCE RULE: Check if goal is set before allowing record entry
+            if (currentGoalTarget > 0) {
+                findNavController().navigate(R.id.action_homeFragment_to_addRecordFragment)
+            } else {
+                showGoalRequiredDialog()
+            }
         }
 
         binding.buttonViewHistory.setOnClickListener {
@@ -74,30 +80,28 @@ class HomeFragment : Fragment() {
 
     private fun observeViewModels() {
         goalViewModel.goalResult.observe(viewLifecycleOwner) { response ->
-            if (response != null && response.success) {
+            if (response != null && response.success == true) {
                 val goalData = response.data
-                val target = goalData?.targetCalories ?: 0
+                currentGoalTarget = goalData?.targetCalories ?: 0 // Update our tracking variable
                 val current = goalData?.currentCalories ?: 0
                 val actualPercent = goalData?.progressPercent?.toInt() ?: 0
 
-                // UI logic: Limit progress bar visual to 100
                 binding.progressBarGoal.progress = actualPercent.coerceAtMost(100)
-                binding.textViewGoalTarget.text = "Goal: $target kcal"
+                binding.textViewGoalTarget.text = "Goal: $currentGoalTarget kcal"
 
                 if (actualPercent >= 100) {
-                    // Goal Met state
-                    binding.textViewGoalProgress.text = "$current / $target kcal"
+                    binding.textViewGoalProgress.text = "$current / $currentGoalTarget kcal (Goal Met! 🎉)"
                     binding.progressBarGoal.progressTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(requireContext(), R.color.green)
                     )
                 } else {
-                    // In-progress state
-                    binding.textViewGoalProgress.text = "$current / $target kcal ($actualPercent%)"
+                    binding.textViewGoalProgress.text = "$current / $currentGoalTarget kcal ($actualPercent%)"
                     binding.progressBarGoal.progressTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(requireContext(), R.color.blue)
                     )
                 }
             } else if (response != null) {
+                currentGoalTarget = 0
                 binding.textViewGoalTarget.text = "No goal set"
                 binding.progressBarGoal.progress = 0
                 binding.textViewGoalProgress.text = "Tap Update Goal to start"
@@ -109,6 +113,17 @@ class HomeFragment : Fragment() {
                 Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun showGoalRequiredDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Weekly Goal Required")
+            .setMessage("You need to set a weekly calorie goal before you can log activities.")
+            .setPositiveButton("Set Goal Now") { _, _ ->
+                showSetGoalDialog()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun checkProfileCompletion(userId: Int) {

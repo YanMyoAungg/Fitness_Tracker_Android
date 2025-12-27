@@ -21,10 +21,19 @@ class FitnessViewModel : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
-    fun addRecord(userId: Int, type: String, duration: Int, calories: Int, date: String) {
+    fun addRecord(
+        userId: Int,
+        type: String,
+        duration: Int,
+        calories: Int,
+        date: String,
+        lat: Double?,
+        lng: Double?,
+        locName: String?
+    ) {
         viewModelScope.launch {
             try {
-                val response = repository.addRecord(userId, type, duration, calories, date)
+                val response = repository.addRecord(userId, type, duration, calories, date, lat, lng, locName)
                 if (response.success) {
                     _addRecordResult.value = true
                 } else {

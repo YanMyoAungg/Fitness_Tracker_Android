@@ -46,6 +46,14 @@
             android:textColor="?attr/colorPrimary"
             android:textStyle="italic" />
 
+        <TextView
+            android:id="@+id/textViewLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textSize="12sp"
+            tools:text="Location: Yangon, Myanmar" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
