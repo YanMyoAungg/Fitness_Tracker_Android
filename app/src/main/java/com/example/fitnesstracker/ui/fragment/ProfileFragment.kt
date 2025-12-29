@@ -55,7 +55,7 @@ class ProfileFragment : Fragment() {
                 binding.textViewUsername.text = "Username: ${it.username}"
                 binding.textViewEmail.text = "Email: ${it.email}"
                 binding.textViewPhone.text = "Phone: ${it.phone ?: "Not set"}"
-                binding.textViewWeightHeight.text = "Weight: ${it.currentWeight ?: 0}kg | Height: ${it.height ?: 0}cm"
+                binding.textViewWeightHeight.text = "Weight: ${it.currentWeight?.toInt() ?: 0}kg | Height: ${it.height?.toInt() ?: 0}cm"
                 binding.textViewDOBGender.text = "DOB: ${it.dateOfBirth ?: "Not set"} | Gender: ${it.gender ?: "Not set"}"
                 
                 // Keep local session updated for fitness record calculations

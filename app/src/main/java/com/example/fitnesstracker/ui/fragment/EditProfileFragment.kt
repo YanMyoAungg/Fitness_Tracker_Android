@@ -54,8 +54,8 @@ class EditProfileFragment : Fragment() {
         viewModel.profile.observe(viewLifecycleOwner) { profile ->
             profile?.let {
                 binding.editTextPhone.setText(it.phone)
-                binding.editTextWeight.setText(it.currentWeight?.toString())
-                binding.editTextHeight.setText(it.height?.toString())
+                binding.editTextWeight.setText(it.currentWeight?.toInt()?.toString())
+                binding.editTextHeight.setText(it.height?.toInt()?.toString())
                 binding.editTextDOB.setText(it.dateOfBirth)
                 when (it.gender) {
                     "Male" -> binding.radioButtonMale.isChecked = true
