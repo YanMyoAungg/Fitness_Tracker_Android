@@ -34,4 +34,54 @@
         app:layout_constraintTop_toBottomOf="@id/appBarLayout"
         app:navGraph="@navigation/nav_graph" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="Menu"
+        android:src="@drawable/ic_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Profile"
+        android:src="@drawable/ic_person"
+        android:visibility="gone"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@+id/fab_history"
+        app:layout_constraintEnd_toEndOf="@+id/fab_menu"
+        app:layout_constraintStart_toStartOf="@+id/fab_menu" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="History"
+        android:src="@drawable/ic_history"
+        android:visibility="gone"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@+id/fab_add_record"
+        app:layout_constraintEnd_toEndOf="@+id/fab_menu"
+        app:layout_constraintStart_toStartOf="@+id/fab_menu" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Add Record"
+        android:src="@drawable/ic_add"
+        android:visibility="gone"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@+id/fab_menu"
+        app:layout_constraintEnd_toEndOf="@+id/fab_menu"
+        app:layout_constraintStart_toStartOf="@+id/fab_menu" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
