@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Base State (Male Selected) -->
+    <ConstraintSet android:id="@+id/state_male">
+        <Constraint
+            android:id="@id/genderSelector"
+            app:layout_constraintTop_toTopOf="@id/radioButtonMale"
+            app:layout_constraintBottom_toBottomOf="@id/radioButtonMale"
+            app:layout_constraintStart_toStartOf="@id/radioButtonMale"
+            app:layout_constraintEnd_toEndOf="@id/radioButtonMale" />
+    </ConstraintSet>
+
+    <!-- Female Selected State -->
+    <ConstraintSet android:id="@+id/state_female">
+        <Constraint
+            android:id="@id/genderSelector"
+            app:layout_constraintTop_toTopOf="@id/radioButtonFemale"
+            app:layout_constraintBottom_toBottomOf="@id/radioButtonFemale"
+            app:layout_constraintStart_toStartOf="@id/radioButtonFemale"
+            app:layout_constraintEnd_toEndOf="@+id/radioButtonFemale" />
+    </ConstraintSet>
+
+    <!-- Other Selected State -->
+    <ConstraintSet android:id="@+id/state_other">
+        <Constraint
+            android:id="@id/genderSelector"
+            app:layout_constraintTop_toTopOf="@id/radioButtonOther"
+            app:layout_constraintBottom_toBottomOf="@+id/radioButtonOther"
+            app:layout_constraintStart_toStartOf="@+id/radioButtonOther"
+            app:layout_constraintEnd_toEndOf="@+id/radioButtonOther" />
+    </ConstraintSet>
+
+    <!-- Transitions for the animation -->
+    <Transition
+        app:constraintSetStart="@id/state_male"
+        app:constraintSetEnd="@id/state_female"
+        app:duration="300">
+        <OnClick app:targetId="@id/radioButtonFemale" />
+    </Transition>
+    <Transition
+        app:constraintSetStart="@id/state_male"
+        app:constraintSetEnd="@id/state_other"
+        app:duration="300">
+        <OnClick app:targetId="@id/radioButtonOther" />
+    </Transition>
+
+    <Transition
+        app:constraintSetStart="@id/state_female"
+        app:constraintSetEnd="@id/state_male"
+        app:duration="300">
+        <OnClick app:targetId="@id/radioButtonMale" />
+    </Transition>
+    <Transition
+        app:constraintSetStart="@id/state_female"
+        app:constraintSetEnd="@id/state_other"
+        app:duration="300">
+        <OnClick app:targetId="@id/radioButtonOther" />
+    </Transition>
+
+    <Transition
+        app:constraintSetStart="@id/state_other"
+        app:constraintSetEnd="@id/state_male"
+        app:duration="300">
+        <OnClick app:targetId="@id/radioButtonMale" />
+    </Transition>
+    <Transition
+        app:constraintSetStart="@id/state_other"
+        app:constraintSetEnd="@id/state_female"
+        app:duration="300">
+        <OnClick app:targetId="@id/radioButtonFemale" />
+    </Transition>
+
+</MotionScene>

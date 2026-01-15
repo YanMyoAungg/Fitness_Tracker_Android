@@ -13,12 +13,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.fitnesstracker.R
 import com.example.fitnesstracker.data.model.ActivityType
 import com.example.fitnesstracker.data.remote.SessionManager
 import com.example.fitnesstracker.databinding.FragmentAddRecordBinding
 import com.example.fitnesstracker.ui.viewmodel.FitnessViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -32,7 +32,7 @@ class AddRecordFragment : Fragment() {
 
     private val viewModel: FitnessViewModel by viewModels()
     private lateinit var sessionManager: SessionManager
-    
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var currentLat: Double? = null
     private var currentLng: Double? = null
@@ -42,7 +42,8 @@ class AddRecordFragment : Fragment() {
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        ) {
             fetchCurrentLocation()
         } else {
             binding.textViewLocation.text = "Location: Permission denied"
@@ -93,10 +94,9 @@ class AddRecordFragment : Fragment() {
 
     private fun fetchCurrentLocation() {
         try {
-            // Using getCurrentLocation instead of getLastLocation for fresh coordinates
             val priority = Priority.PRIORITY_HIGH_ACCURACY
             val cts = CancellationTokenSource()
-            
+
             fusedLocationClient.getCurrentLocation(priority, cts.token).addOnSuccessListener { location ->
                 if (location != null) {
                     currentLat = location.latitude
@@ -138,7 +138,7 @@ class AddRecordFragment : Fragment() {
 
         val duration = binding.editTextDuration.text.toString().toIntOrNull() ?: 0
         val calories = binding.editTextCalories.text.toString().toIntOrNull() ?: 0
-        
+
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val currentDateTime = sdf.format(Date())
 
@@ -175,7 +175,7 @@ class AddRecordFragment : Fragment() {
     private fun setupSpinner() {
         val adapter = ArrayAdapter(
             requireContext(),
-            android.R.layout.simple_spinner_item,
+            R.layout.spinner_item, // Use our custom layout
             ActivityType.values().map { it.displayName }
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

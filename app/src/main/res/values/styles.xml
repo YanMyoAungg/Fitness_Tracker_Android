@@ -1,0 +1,33 @@
+<resources>
+
+    <!-- Style for EditText on a dark/gradient background -->
+    <style name="WhiteEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">#B3FFFFFF</item> <!-- 70% white -->
+        <item name="android:backgroundTint">@android:color/white</item>
+    </style>
+
+    <!-- Style for a primary action button -->
+    <style name="PrimaryButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">@color/md_theme_secondary</item>
+        <item name="android:textColor">@color/md_theme_onSecondary</item>
+    </style>
+
+    <!-- Style for a text link button -->
+    <style name="TextLinkButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <!-- Style for semi-transparent cards -->
+    <style name="TransparentCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">#33FFFFFF</item> <!-- 20% transparent white -->
+        <item name="cardElevation">0dp</item>
+    </style>
+
+    <!-- New Style for Outlined Destructive Button -->
+    <style name="DestructiveOutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">#FFCDD2</item>
+        <item name="strokeColor">#80FFCDD2</item> <!-- 50% transparent light red -->
+    </style>
+
+</resources>

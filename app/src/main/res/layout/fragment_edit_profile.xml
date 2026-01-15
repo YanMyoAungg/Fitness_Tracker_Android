@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Edit Profile"
+            android:textColor="@android:color/white"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -23,6 +25,7 @@
 
         <EditText
             android:id="@+id/editTextPhone"
+            style="@style/WhiteEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -34,28 +37,31 @@
 
         <EditText
             android:id="@+id/editTextWeight"
+            style="@style/WhiteEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Weight (kg)"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />
 
         <EditText
             android:id="@+id/editTextHeight"
+            style="@style/WhiteEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Height (cm)"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextWeight" />
 
         <EditText
             android:id="@+id/editTextDOB"
+            style="@style/WhiteEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -65,46 +71,82 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextHeight" />
 
-        <RadioGroup
-            android:id="@+id/radioGroupGender"
+        <!-- MotionLayout for Gender Selection -->
+        <androidx.constraintlayout.motion.widget.MotionLayout
+            android:id="@+id/genderMotionLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:orientation="horizontal"
+            app:layoutDescription="@xml/scene_gender_selection"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextDOB">
 
+            <!-- This is the animating background selector -->
+            <View
+                android:id="@+id/genderSelector"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/radio_checked"
+                app:layout_constraintBottom_toBottomOf="@+id/radioButtonMale"
+                app:layout_constraintEnd_toEndOf="@+id/radioButtonMale"
+                app:layout_constraintStart_toStartOf="@+id/radioButtonMale"
+                app:layout_constraintTop_toTopOf="@+id/radioButtonMale" />
+
+            <!-- The Radio Buttons (now without individual backgrounds) -->
             <RadioButton
                 android:id="@+id/radioButtonMale"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Male" />
+                android:button="@null"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="Male"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/radioButtonFemale"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <RadioButton
                 android:id="@+id/radioButtonFemale"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Female" />
+                android:layout_marginStart="8dp"
+                android:button="@null"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="Female"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/radioButtonOther"
+                app:layout_constraintStart_toEndOf="@+id/radioButtonMale"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <RadioButton
                 android:id="@+id/radioButtonOther"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Other" />
-        </RadioGroup>
+                android:layout_marginStart="8dp"
+                android:button="@null"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="Other"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/radioButtonFemale"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.motion.widget.MotionLayout>
 
         <Button
             android:id="@+id/buttonSaveProfile"
+            style="@style/PrimaryButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="Save Changes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroupGender" />
+            app:layout_constraintTop_toBottomOf="@+id/genderMotionLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

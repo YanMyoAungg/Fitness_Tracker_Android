@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Welcome to Fitness Tracker"
+        android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,13 +20,12 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardGoal"
+        style="@style/TransparentCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewWelcome">
@@ -44,6 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Weekly Calorie Goal"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold" />
 
                 <TextView
@@ -51,6 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:textColor="@android:color/white"
                     tools:text="Goal: 2000 kcal" />
             </RelativeLayout>
 
@@ -69,11 +71,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
+                android:textColor="@android:color/white"
                 tools:text="1200 / 2000 kcal (60%)" />
 
             <Button
                 android:id="@+id/buttonSetGoal"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/TextLinkButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -83,29 +86,21 @@
     </androidx.cardview.widget.CardView>
 
     <Button
-        android:id="@+id/buttonAddRecord"
+        android:id="@+id/buttonViewHistory"
+        style="@style/PrimaryButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:text="Add Daily Record"
+        android:text="View Activity History"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardGoal" />
 
     <Button
-        android:id="@+id/buttonViewHistory"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="View History"
-        app:layout_constraintEnd_toEndOf="@+id/buttonAddRecord"
-        app:layout_constraintStart_toStartOf="@+id/buttonAddRecord"
-        app:layout_constraintTop_toBottomOf="@+id/buttonAddRecord" />
-
-    <Button
         android:id="@+id/buttonProfile"
+        style="@style/PrimaryButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

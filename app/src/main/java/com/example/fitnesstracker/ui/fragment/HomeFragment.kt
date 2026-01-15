@@ -1,18 +1,22 @@
 package com.example.fitnesstracker.ui.fragment
 
+import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.fitnesstracker.MainActivity
 import com.example.fitnesstracker.R
 import com.example.fitnesstracker.data.remote.SessionManager
 import com.example.fitnesstracker.databinding.FragmentHomeBinding
@@ -24,12 +28,12 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val profileViewModel: ProfileViewModel by viewModels()
-    private val goalViewModel: GoalViewModel by viewModels()
+    // Use activityViewModels to share with MainActivity
+    private val profileViewModel: ProfileViewModel by activityViewModels()
+    private val goalViewModel: GoalViewModel by activityViewModels()
     private lateinit var sessionManager: SessionManager
 
     private var isPromptShown = false
-    private var currentGoalTarget: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,15 +60,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        binding.buttonAddRecord.setOnClickListener {
-            // ENFORCE RULE: Check if goal is set before allowing record entry
-            if (currentGoalTarget > 0) {
-                findNavController().navigate(R.id.action_homeFragment_to_addRecordFragment)
-            } else {
-                showGoalRequiredDialog()
-            }
-        }
-
+        // FAB listener is now in MainActivity
         binding.buttonViewHistory.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_historyFragment)
         }
@@ -74,7 +70,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.buttonSetGoal.setOnClickListener {
-            showSetGoalDialog()
+            (activity as? MainActivity)?.showSetGoalDialog()
         }
     }
 
@@ -82,28 +78,27 @@ class HomeFragment : Fragment() {
         goalViewModel.goalResult.observe(viewLifecycleOwner) { response ->
             if (response != null && response.success == true) {
                 val goalData = response.data
-                currentGoalTarget = goalData?.targetCalories ?: 0 // Update our tracking variable
+                val currentGoalTarget = goalData?.targetCalories ?: 0
                 val current = goalData?.currentCalories ?: 0
                 val actualPercent = goalData?.progressPercent?.toInt() ?: 0
 
-                binding.progressBarGoal.progress = actualPercent.coerceAtMost(100)
+                animateProgressBar(actualPercent.coerceAtMost(100))
                 binding.textViewGoalTarget.text = "Goal: $currentGoalTarget kcal"
 
                 if (actualPercent >= 100) {
                     binding.textViewGoalProgress.text = "$current / $currentGoalTarget kcal (Goal Met! 🎉)"
                     binding.progressBarGoal.progressTintList = ColorStateList.valueOf(
-                        ContextCompat.getColor(requireContext(), R.color.green)
+                        ContextCompat.getColor(requireContext(), R.color.green_success)
                     )
                 } else {
                     binding.textViewGoalProgress.text = "$current / $currentGoalTarget kcal ($actualPercent%)"
                     binding.progressBarGoal.progressTintList = ColorStateList.valueOf(
-                        ContextCompat.getColor(requireContext(), R.color.blue)
+                        ContextCompat.getColor(requireContext(), R.color.md_theme_secondary)
                     )
                 }
             } else if (response != null) {
-                currentGoalTarget = 0
                 binding.textViewGoalTarget.text = "No goal set"
-                binding.progressBarGoal.progress = 0
+                animateProgressBar(0)
                 binding.textViewGoalProgress.text = "Tap Update Goal to start"
             }
         }
@@ -115,15 +110,11 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun showGoalRequiredDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Weekly Goal Required")
-            .setMessage("You need to set a weekly calorie goal before you can log activities.")
-            .setPositiveButton("Set Goal Now") { _, _ ->
-                showSetGoalDialog()
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
+    private fun animateProgressBar(toProgress: Int) {
+        val animation = ObjectAnimator.ofInt(binding.progressBarGoal, "progress", binding.progressBarGoal.progress, toProgress)
+        animation.duration = 1000
+        animation.interpolator = AccelerateDecelerateInterpolator()
+        animation.start()
     }
 
     private fun checkProfileCompletion(userId: Int) {
@@ -147,40 +138,26 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun showSetGoalDialog() {
-        val input = EditText(requireContext()).apply {
-            inputType = InputType.TYPE_CLASS_NUMBER
-            hint = "e.g. 2000"
+    private fun showProfilePrompt() {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_prompt, null)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val btnPositive = dialogView.findViewById<Button>(R.id.button_positive)
+        val btnNegative = dialogView.findViewById<Button>(R.id.button_negative)
+
+        btnPositive.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
+            dialog.dismiss()
+        }
+        btnNegative.setOnClickListener {
+            dialog.dismiss()
         }
 
-        AlertDialog.Builder(requireContext())
-            .setTitle("Set Weekly Calorie Goal")
-            .setMessage("Enter your target calories for this week:")
-            .setView(input)
-            .setPositiveButton("Save") { _, _ ->
-                val target = input.text.toString().toIntOrNull()
-                if (target != null && target > 0) {
-                    val userId = sessionManager.getUserId()
-                    goalViewModel.setGoal(userId, target)
-                } else {
-                    Toast.makeText(context, "Please enter a valid number", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-    private fun showProfilePrompt() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Complete Your Profile")
-            .setMessage("Please set your height and weight to get accurate fitness tracking.")
-            .setCancelable(false)
-            .setPositiveButton("Set Now") { _, _ ->
-                findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
-            }
-            .setNegativeButton("Later", null)
-            .show()
+        dialog.show()
     }
 
     override fun onDestroyView() {

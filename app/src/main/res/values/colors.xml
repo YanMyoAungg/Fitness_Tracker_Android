@@ -2,6 +2,27 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="green">#4CAF50</color>
-    <color name="blue">#2196F3</color>
+    
+    <!-- Primary Theme Colors -->
+    <color name="md_theme_primary">#0061A4</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_secondary">#006A6A</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    
+    <!-- Background and Surface Colors -->
+    <color name="md_theme_background">#F8F9FF</color>
+    <color name="md_theme_surface">#FFFFFF</color>
+    <color name="md_theme_onSurface">#1A1C1E</color>
+
+    <!-- Gradient Colors -->
+    <color name="gradient_start">#0D47A1</color>
+    <color name="gradient_end">#00796B</color>
+
+    <!-- Status Colors -->
+    <color name="green_success">#4CAF50</color>
+
+    <!-- BottomNav Colors -->
+    <color name="bottom_nav_active">@color/md_theme_primary</color>
+    <color name="bottom_nav_inactive">#A4A4A4</color>
+    <color name="bottom_nav_ripple">#330061A4</color> <!-- 20% transparent primary color -->
 </resources>

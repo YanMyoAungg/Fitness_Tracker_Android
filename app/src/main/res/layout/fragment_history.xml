@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".ui.fragment.HistoryFragment">
 
     <LinearLayout
@@ -16,7 +17,7 @@
 
         <Button
             android:id="@+id/buttonStartDate"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            style="@style/TextLinkButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -24,7 +25,7 @@
 
         <Button
             android:id="@+id/buttonEndDate"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            style="@style/TextLinkButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -35,18 +36,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Clear Filter"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:contentDescription="Clear Filter" />
+            app:tint="@android:color/white" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHistory"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="80dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/filterContainer"
+        app:layout_constraintTop_toBottomOf="@+id/filterContainer"
         tools:listitem="@layout/item_fitness_record" />
 
     <ProgressBar
@@ -58,5 +62,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

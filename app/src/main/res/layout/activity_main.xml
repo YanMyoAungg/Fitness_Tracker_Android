@@ -5,20 +5,22 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:background="@android:color/transparent"
+        app:elevation="0dp"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -31,57 +33,69 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
         app:navGraph="@navigation/nav_graph" />
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
+
+    <!-- FAB Menu Items -->
+    <ImageView
+        android:id="@+id/fab_add_record"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/fab_item_background"
+        android:padding="12dp"
+        android:src="@drawable/ic_add_circle"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/fab_menu"
+        app:layout_constraintEnd_toEndOf="@+id/fab_menu"
+        app:layout_constraintStart_toStartOf="@+id/fab_menu" />
+
+    <ImageView
+        android:id="@+id/fab_history"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/fab_item_background"
+        android:padding="12dp"
+        android:src="@drawable/ic_history_filled"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/fab_add_record"
+        app:layout_constraintEnd_toEndOf="@+id/fab_menu"
+        app:layout_constraintStart_toStartOf="@+id/fab_menu" />
+
+    <ImageView
+        android:id="@+id/fab_profile"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/fab_item_background"
+        android:padding="12dp"
+        android:src="@drawable/ic_person"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/fab_history"
+        app:layout_constraintEnd_toEndOf="@+id/fab_menu"
+        app:layout_constraintStart_toStartOf="@+id/fab_menu" />
+
+    <!-- Main FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="100dp"
         android:contentDescription="Menu"
         android:src="@drawable/ic_add"
+        app:backgroundTint="@color/md_theme_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="Profile"
-        android:src="@drawable/ic_person"
-        android:visibility="gone"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toTopOf="@+id/fab_history"
-        app:layout_constraintEnd_toEndOf="@+id/fab_menu"
-        app:layout_constraintStart_toStartOf="@+id/fab_menu" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_history"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="History"
-        android:src="@drawable/ic_history"
-        android:visibility="gone"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toTopOf="@+id/fab_add_record"
-        app:layout_constraintEnd_toEndOf="@+id/fab_menu"
-        app:layout_constraintStart_toStartOf="@+id/fab_menu" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="Add Record"
-        android:src="@drawable/ic_add"
-        android:visibility="gone"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toTopOf="@+id/fab_menu"
-        app:layout_constraintEnd_toEndOf="@+id/fab_menu"
-        app:layout_constraintStart_toStartOf="@+id/fab_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
