@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +16,7 @@ import com.example.fitnesstracker.data.remote.SessionManager
 import com.example.fitnesstracker.ui.viewmodel.GoalViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.osmdroid.config.Configuration
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,10 +26,13 @@ class MainActivity : AppCompatActivity() {
     private val goalViewModel: GoalViewModel by viewModels()
     private lateinit var sessionManager: SessionManager
 
-    private var isFabMenuOpen = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Set up osmdroid configuration
+        Configuration.getInstance().load(this, getSharedPreferences("osmdroid", MODE_PRIVATE))
+        Configuration.getInstance().userAgentValue = packageName
+
         setContentView(R.layout.activity_main)
         sessionManager = SessionManager(this)
 
@@ -50,72 +52,19 @@ class MainActivity : AppCompatActivity() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.setupWithNavController(navController)
 
-        setupFabMenu()
-
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            val fabMenu = findViewById<FloatingActionButton>(R.id.fab_menu)
             when (destination.id) {
                 R.id.loginFragment, R.id.registerFragment -> {
                     bottomNav.visibility = View.GONE
-                    fabMenu.visibility = View.GONE
                     supportActionBar?.hide()
                 }
 
                 else -> {
                     bottomNav.visibility = View.VISIBLE
-                    fabMenu.visibility = View.VISIBLE
                     supportActionBar?.show()
                 }
             }
         }
-    }
-
-    private fun setupFabMenu() {
-        val fabMenu = findViewById<FloatingActionButton>(R.id.fab_menu)
-        val fabAddRecord = findViewById<ImageView>(R.id.fab_add_record)
-        val fabHistory = findViewById<ImageView>(R.id.fab_history)
-        val fabProfile = findViewById<ImageView>(R.id.fab_profile)
-
-        val fabItems = listOf(fabAddRecord, fabHistory, fabProfile)
-
-        fabMenu.setOnClickListener {
-            isFabMenuOpen = !isFabMenuOpen
-            if (isFabMenuOpen) {
-                openFabMenu(fabItems)
-            } else {
-                closeFabMenu(fabItems)
-            }
-        }
-
-        fabAddRecord.setOnClickListener { closeMenuAndNavigate(R.id.addRecordFragment, fabItems) }
-        fabHistory.setOnClickListener { closeMenuAndNavigate(R.id.historyFragment, fabItems) }
-        fabProfile.setOnClickListener { closeMenuAndNavigate(R.id.profileFragment, fabItems) }
-    }
-
-    private fun openFabMenu(fabItems: List<ImageView>) {
-        findViewById<FloatingActionButton>(R.id.fab_menu).setImageResource(R.drawable.ic_close)
-        var offset = 20f
-        fabItems.forEach { fab ->
-            fab.translationY = 0f // Reset position before animating
-            fab.visibility = View.VISIBLE
-            fab.animate().translationY(-offset).alpha(1f).setDuration(300).start()
-            offset += 20f
-        }
-    }
-
-    private fun closeFabMenu(fabItems: List<ImageView>) {
-        findViewById<FloatingActionButton>(R.id.fab_menu).setImageResource(R.drawable.ic_add)
-        fabItems.forEach { fab ->
-            fab.animate().translationY(0f).alpha(0f).setDuration(300).withEndAction {
-                fab.visibility = View.GONE
-            }.start()
-        }
-    }
-
-    private fun closeMenuAndNavigate(destination: Int, fabItems: List<ImageView>) {
-        isFabMenuOpen = false
-        closeFabMenu(fabItems)
-        navController.navigate(destination)
     }
 
     fun showGoalRequiredDialog() {

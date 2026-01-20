@@ -1,11 +1,12 @@
 package com.example.fitnesstracker.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.fitnesstracker.R
 import com.example.fitnesstracker.data.remote.SessionManager
@@ -17,7 +18,7 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ProfileViewModel by viewModels()
+    private val profileViewModel: ProfileViewModel by activityViewModels()
     private lateinit var sessionManager: SessionManager
 
     override fun onCreateView(
@@ -34,36 +35,29 @@ class ProfileFragment : Fragment() {
 
         val userId = sessionManager.getUserId()
         if (userId != -1) {
-            viewModel.fetchProfile(userId)
+            profileViewModel.fetchProfile(userId)
         }
+
+        observeViewModel()
+
 
         binding.buttonEditProfile.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
         }
-
-        binding.buttonLogout.setOnClickListener {
-            sessionManager.logout()
-            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
-        }
-
-        observeViewModel()
     }
 
     private fun observeViewModel() {
-        viewModel.profile.observe(viewLifecycleOwner) { profile ->
+        profileViewModel.profile.observe(viewLifecycleOwner) { profile ->
             profile?.let {
                 binding.textViewUsername.text = it.username
                 binding.textViewEmail.text = it.email
-                binding.textViewWeight.text = "${it.currentWeight ?: 0}kg\nWeight"
-                binding.textViewHeight.text = "${it.height ?: 0}cm\nHeight"
-                binding.textViewAge.text = "${it.age ?: 0}\nAge"
 
-                // Keep local session updated for fitness record calculations
-                sessionManager.saveBodyInfo(
-                    it.currentWeight ?: 0f,
-                    it.height ?: 0f,
-                    it.age ?: 0
-                )
+                binding.textViewWeight.text = "${it.currentWeight ?: "N/A"}kg\nWeight"
+                binding.textViewHeight.text = "${it.height ?: "N/A"}cm\nHeight"
+                binding.textViewAge.text = "${it.age ?: "N/A"}\nAge"
+
+                // Create and set the profile icon
+                val initial = it.username.first().uppercaseChar()
             }
         }
     }

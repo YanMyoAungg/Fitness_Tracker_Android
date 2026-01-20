@@ -66,6 +66,16 @@ dependencies {
     // Play Services Location for FusedLocationProviderClient
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
+    // OpenStreetMap
+    implementation("org.osmdroid:osmdroid-android:6.1.18") {
+        exclude(group = "com.j256.ormlite", module = "ormlite-android")
+        exclude(group = "com.j256.ormlite", module = "ormlite-core")
+    }
+    implementation(libs.osmbonuspack)
+
+    // Splash Screen API
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
