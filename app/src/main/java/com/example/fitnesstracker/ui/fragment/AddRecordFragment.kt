@@ -32,7 +32,7 @@ class AddRecordFragment : Fragment() {
 
     private val viewModel: FitnessViewModel by viewModels()
     private lateinit var sessionManager: SessionManager
-    
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var currentLat: Double? = null
     private var currentLng: Double? = null
@@ -42,7 +42,8 @@ class AddRecordFragment : Fragment() {
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        ) {
             fetchCurrentLocation()
         } else {
             binding.textViewLocation.text = "Location: Permission denied"
@@ -80,6 +81,7 @@ class AddRecordFragment : Fragment() {
             ) == PackageManager.PERMISSION_GRANTED -> {
                 fetchCurrentLocation()
             }
+
             else -> {
                 requestPermissionLauncher.launch(
                     arrayOf(
@@ -96,16 +98,17 @@ class AddRecordFragment : Fragment() {
             // Using getCurrentLocation instead of getLastLocation for fresh coordinates
             val priority = Priority.PRIORITY_HIGH_ACCURACY
             val cts = CancellationTokenSource()
-            
-            fusedLocationClient.getCurrentLocation(priority, cts.token).addOnSuccessListener { location ->
-                if (location != null) {
-                    currentLat = location.latitude
-                    currentLng = location.longitude
-                    reverseGeocode(location.latitude, location.longitude)
-                } else {
-                    binding.textViewLocation.text = "Location: Unknown"
-                }
-            }.addOnFailureListener {
+
+            fusedLocationClient.getCurrentLocation(priority, cts.token)
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        currentLat = location.latitude
+                        currentLng = location.longitude
+                        reverseGeocode(location.latitude, location.longitude)
+                    } else {
+                        binding.textViewLocation.text = "Location: Unknown"
+                    }
+                }.addOnFailureListener {
                 binding.textViewLocation.text = "Location: Error fetching"
             }
         } catch (e: SecurityException) {
@@ -138,7 +141,7 @@ class AddRecordFragment : Fragment() {
 
         val duration = binding.editTextDuration.text.toString().toIntOrNull() ?: 0
         val calories = binding.editTextCalories.text.toString().toIntOrNull() ?: 0
-        
+
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val currentDateTime = sdf.format(Date())
 
@@ -151,7 +154,11 @@ class AddRecordFragment : Fragment() {
                     currentLat, currentLng, currentLocationName
                 )
             } else {
-                Toast.makeText(requireContext(), "Please enter duration and calories", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Please enter duration and calories",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -159,7 +166,11 @@ class AddRecordFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.addRecordResult.observe(viewLifecycleOwner) { success ->
             if (success) {
-                Toast.makeText(requireContext(), "Saved at $currentLocationName", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Saved at $currentLocationName",
+                    Toast.LENGTH_SHORT
+                ).show()
                 binding.editTextDuration.text.clear()
                 binding.editTextCalories.text.clear()
             }
