@@ -66,6 +66,9 @@ dependencies {
     // Play Services Location for FusedLocationProviderClient
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
+    // Charting Library
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
